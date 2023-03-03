@@ -54,6 +54,4 @@ public class User {
     @Column(name = "hashed_password")
     private String hashedPassword;
 
-
-
 }

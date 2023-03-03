@@ -29,13 +29,6 @@ public class JwtUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-//        if ("hei".equals(email)) {
-//            return new User("hei", "$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6",
-//                    new ArrayList<>());
-//        } else {
-//            throw new UsernameNotFoundException("User not found with username: " + email);
-//        }
-
         try{
             User user = userRepo.findUserByEmail(email);
             if(user !=null){
@@ -44,9 +37,9 @@ public class JwtUserDetailsService implements UserDetailsService {
                return new org.springframework.security.core.userdetails.User(emailInDatabase,passwordInDatabase,new ArrayList<>());
             }
         }catch (UsernameNotFoundException e){
-            throw new UsernameNotFoundException("pula "+ email);
+            throw new UsernameNotFoundException("email not found "+ email);
         }
-        throw new UsernameNotFoundException("pula "+ email);
+        throw new UsernameNotFoundException("email not found "+ email);
     }
 
     public void authenticate(String username, String password) throws Exception {

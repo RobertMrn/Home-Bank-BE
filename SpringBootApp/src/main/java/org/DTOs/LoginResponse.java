@@ -10,5 +10,9 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LoginResponse {
-    private String objectEncoder;
+    private String response;
+//    private String objectEncoder;
+//    private int userId;
+//    private String firstName;
+//    private String lastName;
 }

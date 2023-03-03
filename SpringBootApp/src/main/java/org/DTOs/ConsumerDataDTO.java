@@ -1,4 +1,4 @@
-package org.Service.Entities;
+package org.DTOs;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
@@ -6,40 +6,23 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.math.BigDecimal;
 import java.util.Date;
 
-@Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "CREDIT_LOAN_CONSUMER_DATA")
-public class CreditLoanConsumerData {
-
-    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "contract_id")
-    @MapsId
-    private CreditLoan contractId;
-
-    @Id
+@AllArgsConstructor
+public class ConsumerDataDTO {
+    private int contractId;
     private int consumerDataId;
-
-    @Column(name = "IBAN", nullable = false)
     private String iban;
-
-    @Column(name = "family_situation", nullable = false)
     private String familySituation;
-
-    @Column(name = "living_situation", nullable = false)
     private String livingSituation;
-
-    @Column(name = "number_of_children", nullable = false)
     private int numberOfChildren;
-
-
-    @Column(name = "occupation", nullable = false)
     private String occupation;
 
     @Column(name = "employment_start_date", nullable = false)
@@ -47,6 +30,5 @@ public class CreditLoanConsumerData {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Europe/Bucharest")
     private Date employmentStartDate;
 
-    @Column(name = "monthly_income", nullable = false)
     private BigDecimal monthlyIncome;
 }

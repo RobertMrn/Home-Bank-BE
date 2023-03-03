@@ -22,25 +22,31 @@ public class JwtTokenGeneration implements Serializable {
 
     @Value("${jwt.secret}")
     private String secret;
+
     public String getEmailFromToken(String token) {
         return getAllDataFromToken(token, Claims::getSubject);
     }
+
     public Date getExpirationDateFromToken(String token) {
         return getAllDataFromToken(token, Claims::getExpiration);
     }
-    public String generateToken(Map<String, Object> data,UserDetails userDetails) {
+
+    public String generateToken(Map<String, Object> data, UserDetails userDetails) {
         return Jwts.builder().setClaims(data).setSubject(userDetails.getUsername()).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.of("Europe/Bucharest")).toInstant()))
                 .signWith(SignatureAlgorithm.HS512, secret).compact();
     }
-    private <T> T getAllDataFromToken(String token, Function<Claims, T> claimsResolver ) {
-        final Claims dataFromToken =  Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+
+    private <T> T getAllDataFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims dataFromToken = Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
         return claimsResolver.apply(dataFromToken);
     }
+
     private Boolean isTokenExpired(String token) {
         final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String email = getEmailFromToken(token);
         return (email.equals(userDetails.getUsername()) && !isTokenExpired(token));

@@ -1,17 +1,25 @@
 package org.Service.Controllers;
 
+import org.DTOs.UserDataAndConsumerData;
 import org.DTOs.UserDto;
+import org.Service.Entities.CreditLoan;
 import org.Service.Entities.User;
 import org.Service.Entities.UserRole;
 import org.Service.Repositories.UserRepo;
+import org.Service.Services.CreditLoanConsumerDataService;
 import org.Service.Services.UserRoleService;
 import org.Service.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Optional;
+import java.util.Base64;
+import java.util.List;
 
 @RestController
+@CrossOrigin
 public class UserController {
 
     @Autowired
@@ -22,6 +30,9 @@ public class UserController {
     @Autowired
     UserRoleService userRoleService;
 
+    @Autowired
+    CreditLoanConsumerDataService creditLoanConsumerDataService;
+
     @GetMapping("/hello")
     public String hello() {
         return "Greetings from Spring Boot!";
@@ -29,6 +40,8 @@ public class UserController {
 
     @PostMapping("/addUser")
     public User addUser(@RequestBody UserDto userDto){
+        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        userDto.setHashedPassword(passwordEncoder.encode(userDto.getHashedPassword()));
         return userService.addUser(userDto);
     }
 
@@ -45,6 +58,34 @@ public class UserController {
     @PostMapping("/addUserRole")
     public UserRole addUserRole(@RequestBody UserRole userRole){
         return userRoleService.addUserRole(userRole);
+    }
+
+    @GetMapping("/findUserDataAndConsumerDataByUserId")
+    public UserDataAndConsumerData findUserDataAndConsumerDataByContractId(@RequestParam String contractId){
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String[] chunks = contractId.split("\\.");
+        String payload = new String(decoder.decode(chunks[1]));
+        return creditLoanConsumerDataService.findUserDataAndConsumerDataByContractId(Integer.parseInt(payload));
+    }
+
+    @PutMapping("/updateUser")
+    public User updateUser(@RequestBody UserDto userDto){
+        return userService.updateUserById(userDto);
+    }
+
+    @GetMapping("/findAllUsers")
+    public List<User> findAllUsers(){
+        return userService.findAllUsers();
+    }
+
+    @GetMapping("/findAllUsersExceptAdmin")
+    public List<User> findAllUsersExceptAdmin(){
+        return userRoleService.findAllUsersExceptAdmin();
+    }
+
+    @DeleteMapping("/deleteUserById")
+    public void deleteUserById(@RequestParam int userId){
+        creditLoanConsumerDataService.deleteConsumerDataAndCreditLoansAndUserById(userId);
     }
 
 }
