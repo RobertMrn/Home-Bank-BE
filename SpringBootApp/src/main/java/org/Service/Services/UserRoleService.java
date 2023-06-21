@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 @Service
 public class UserRoleService {
@@ -35,16 +36,9 @@ public class UserRoleService {
         }
     }
 
-    public List<User> findAllUsersExceptAdmin() {
-        List<User> allUsersExceptAdmin = new ArrayList<>();
+    public Stream<User> findAllUsersExceptAdmin() {
         List<User> allUsers = userService.findAllUsers();
-        for (User user : allUsers) {
-            UserRole userRole = findUserRoleById(user.getUserId());
-            if (!userRole.getRole().equals("Admin")) {
-                allUsersExceptAdmin.add(user);
-            }
-        }
-        return allUsersExceptAdmin;
+        return allUsers.stream().filter(user -> !findUserRoleById(user.getUserId()).getRole().equals("Admin"));
     }
 
     public void deleteUserRoleById(int userId) {

@@ -64,7 +64,4 @@ public class CreditDecisionService {
         return getSystemExpertDecision(systemExpertRequest);
     }
 
-
-
-
 }

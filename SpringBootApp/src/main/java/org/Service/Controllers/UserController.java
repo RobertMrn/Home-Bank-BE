@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.Base64;
 import java.util.List;
+import java.util.stream.Stream;
 
 @RestController
 @CrossOrigin
@@ -60,14 +61,6 @@ public class UserController {
         return userRoleService.addUserRole(userRole);
     }
 
-    @GetMapping("/findUserDataAndConsumerDataByUserId")
-    public UserDataAndConsumerData findUserDataAndConsumerDataByContractId(@RequestParam String contractId){
-        Base64.Decoder decoder = Base64.getUrlDecoder();
-        String[] chunks = contractId.split("\\.");
-        String payload = new String(decoder.decode(chunks[1]));
-        return creditLoanConsumerDataService.findUserDataAndConsumerDataByContractId(Integer.parseInt(payload));
-    }
-
     @PutMapping("/updateUser")
     public User updateUser(@RequestBody UserDto userDto){
         return userService.updateUserById(userDto);
@@ -79,7 +72,7 @@ public class UserController {
     }
 
     @GetMapping("/findAllUsersExceptAdmin")
-    public List<User> findAllUsersExceptAdmin(){
+    public Stream<User> findAllUsersExceptAdmin(){
         return userRoleService.findAllUsersExceptAdmin();
     }
 
@@ -88,4 +81,11 @@ public class UserController {
         creditLoanConsumerDataService.deleteConsumerDataAndCreditLoansAndUserById(userId);
     }
 
+    @GetMapping("/findUserDataAndConsumerDataByUserId")
+    public UserDataAndConsumerData findUserDataAndConsumerDataByContractId(@RequestParam String contractId){
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+        String[] chunks = contractId.split("\\.");
+        String payload = new String(decoder.decode(chunks[1]));
+        return creditLoanConsumerDataService.findUserDataAndConsumerDataByContractId(Integer.parseInt(payload));
+    }
 }

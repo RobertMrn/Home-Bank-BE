@@ -27,6 +27,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             "/hello",
             "/addUser",
             "/addUserRole",
+            "/forgot_password",
+            "/newPassword",
+            "/getTextFromFile",
     };
 
     @Autowired

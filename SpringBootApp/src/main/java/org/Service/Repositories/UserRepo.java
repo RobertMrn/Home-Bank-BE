@@ -7,5 +7,8 @@ import org.springframework.stereotype.Service;
 @Service
 public interface UserRepo extends CrudRepository<User, Integer> {
 
-     User findUserByEmail(String email);
+    User findUserByEmail(String email);
+
+    User findByResetPasswordToken(String token);
+
 }

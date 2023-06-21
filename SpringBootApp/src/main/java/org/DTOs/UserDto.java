@@ -21,6 +21,7 @@ public class UserDto {
     private String firstName;
     private String lastName;
     private String phoneNumber;
+    private String resetPasswordToken;
     private String gender;
     private String address;
     private String nationality;

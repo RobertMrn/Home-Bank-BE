@@ -1,6 +1,7 @@
 package org.Service.Controllers;
 
 
+import com.lowagie.text.DocumentException;
 import org.DTOs.*;
 import org.Service.Entities.CreditLoan;
 import org.Service.Entities.CreditLoanConsumerData;
@@ -9,7 +10,12 @@ import org.Service.Services.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 @CrossOrigin
@@ -80,5 +86,20 @@ public class CreditLoanController {
     @PutMapping("/updateCreditLoanById")
     public CreditLoan updateCreditLoanById(@RequestBody CreditLoanDTO creditLoanDTO){
         return creditLoanService.updateCreditLoanById(creditLoanDTO);
+    }
+
+    @GetMapping("/generateContractPDF")
+    public void exportPDF(@RequestParam int contractId, HttpServletResponse response) throws DocumentException, IOException {
+        CreditLoan creditLoan = creditLoanService.findCreditLoanById(contractId);
+        response.setContentType("application/pdf");
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd_HH:mm:ss");
+        String currentDateTime = dateFormat.format(new Date());
+
+        String headerKey = "Content-Disposition";
+        String headerValue = "attachment; filename=users_" + currentDateTime + ".pdf";
+        response.setHeader(headerKey, headerValue);
+
+        ContractGeneration contractGeneration = new ContractGeneration();
+        contractGeneration.exportPDF(response, creditLoan.getUser(), creditLoan);
     }
 }
